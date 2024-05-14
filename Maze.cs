@@ -1,16 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Demo
+﻿namespace ConsoleMaze
 {
+    /// <summary>
+    /// Represents a Maze class.
+    /// </summary>
     internal class Maze
     {
         bool[,] maze;
         private int width;
         private int height;
+
+        /// <summary>
+        /// Gets or sets the value of the maze at the specified coordinates.
+        /// </summary>
+        public bool this[int x, int y]
+        {
+            get
+            {
+                return maze[x, y];
+            }
+            set
+            {
+                maze[x, y] = value;
+            }
+        }
+
+        /// <summary>
+        /// Gets the width of the maze.
+        /// </summary>
+        public int Width => width;
+
+        /// <summary>
+        /// Gets the height of the maze.
+        /// </summary>
+        public int Height => height;
+
+        /// <summary>
+        /// Initializes a new instance of the Maze class with the specified width and height.
+        /// </summary>
         public Maze(int width, int height)
         {
             maze = new bool[width, height];
@@ -28,66 +54,22 @@ namespace Demo
                 maze[height - 1, col] = true;
             }
         }
-        public void Generate()
+
+        /// <summary>
+        /// Prints the maze to the console.
+        /// </summary>
+        public void Print(IEnumerable<Point>? path = null)
         {
-            RecurDivision(1, 1, width - 2, height - 2);
-        }
-        private void RecurDivision(
-            int topLeftX, 
-            int topLeftY, 
-            int bottomRightX,
-            int bottomRightY)
-        {
-            if (bottomRightY - topLeftY < 2) return;
-            if (bottomRightX - topLeftX < 2) return;
-            // Select random even number
-            Random rand = new Random();
-
-            // Horizontal wall
-            int wallH = rand.Next(topLeftY, bottomRightY);
-            int wallHHole = rand.Next(topLeftX, bottomRightX + 1);
-            while (wallH % 2 != 0) wallH = rand.Next(topLeftY, bottomRightY);
-            for (int col = topLeftX; col <= bottomRightX; col++)
-            {
-                maze[wallH, col] = col != wallHHole;
-            }
-
-            // Vertical wall
-            int wallV = rand.Next(topLeftX, bottomRightX);
-            while (wallV % 2 != 0) wallV = rand.Next(topLeftX, bottomRightX);
-
-            for (int row = topLeftY; row <= bottomRightY; row++)
-            {
-                maze[row, wallV] = true;
-            }
-
-            // Hole above H-Wall
-            int wallVHole = rand.Next(topLeftY, wallH);
-            while (Math.Abs(wallVHole - wallH) <= 0) wallVHole = rand.Next(topLeftY, wallH);
-            maze[wallVHole, wallV] = false;
-
-            // Hole below H-Wall
-            wallVHole = rand.Next(wallH + 1, bottomRightY + 1);
-            while (Math.Abs(wallVHole - wallH) <= 0) wallVHole = rand.Next(topLeftY, wallH);
-            maze[wallVHole, wallV] = false;
-
-            // Do the same for each chamber
-            // top left
-            RecurDivision(topLeftX, topLeftY, wallV - 1, wallH - 1);
-            // top right
-            RecurDivision(wallV + 1, topLeftY, bottomRightX, wallH - 1);
-            // bottom left
-            RecurDivision(topLeftX, wallH + 1, wallV - 1, bottomRightY);
-            // bottom right
-            RecurDivision(wallV + 1, wallH + 1, bottomRightX, bottomRightY);
-        }
-        public void Print()
-        {
+            Console.Clear();
             for (int row = 0; row < maze.GetLength(0); row++)
             {
                 for (int col = 0; col < maze.GetLength(1); col++)
                 {
                     string c = maze[row, col] ? "██" : "  ";
+                    if (path != null && path.Contains(new Point(row, col)))
+                    {
+                        c = "░░";
+                    }
                     Console.Write(c);
                 }
                 Console.WriteLine();
