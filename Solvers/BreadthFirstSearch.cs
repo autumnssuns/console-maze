@@ -8,30 +8,37 @@ namespace ConsoleMaze
         private readonly Queue<Point> queue = new Queue<Point>();
         private readonly Dictionary<Point, Point> cameFrom = new Dictionary<Point, Point>();
         private readonly HashSet<Point> visited = new HashSet<Point>();
-
+        
         public override IEnumerable<Point> Solve()
         {
+            //Begin();
             queue.Enqueue(Start);
             cameFrom[Start] = null;
-
+            //Visit(Start);
+            int count = 0;
             while (queue.Count > 0)
             {
                 Point current = queue.Dequeue();
                 visited.Add(current);
+                count++;
+                Visit(current);
 
                 if (current == End)
                 {
+                    Console.WriteLine(count);
                     return ReconstructPath(current);
                 }
+                IEnumerable<Point> neighbors = GetNeighbors(current);
 
-                foreach (Point neighbor in GetNeighbors(current))
+                foreach (Point neighbor in neighbors)
                 {
-                    if (!visited.Contains(neighbor))
-                    {
-                        queue.Enqueue(neighbor);
-                        cameFrom[neighbor] = current;
-                    }
+                    if (visited.Any(p => p.X == neighbor.X && p.Y == neighbor.Y)) continue;
+                    Probe(neighbor);
+                    queue.Enqueue(neighbor);
+                    cameFrom[neighbor] = current;
                 }
+                Console.WriteLine(queue.Count);
+                Console.ReadKey();
             }
 
             return Enumerable.Empty<Point>();
@@ -43,6 +50,7 @@ namespace ConsoleMaze
             while (current != null)
             {
                 path.Add(current);
+                Backtrack(current);
                 current = cameFrom[current];
             }
             path.Reverse();

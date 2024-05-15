@@ -1,5 +1,18 @@
-﻿namespace ConsoleMaze
+﻿using System.Linq;
+
+namespace ConsoleMaze
 {
+    internal record Format(int row, int col, string symbol, ConsoleColor fg = ConsoleColor.White, ConsoleColor bg = ConsoleColor.Black)
+    {
+        public int Row { get; private set; } = row;
+        public int Column { get; private set; } = col;
+        public string Symbol { get; private set; } = symbol;
+        public ConsoleColor Foreground { get; private set; } = fg;
+        public ConsoleColor Background { get; private set; } = bg;
+        public const ConsoleColor DEFAULT_BG = ConsoleColor.Black;
+        public const ConsoleColor DEFAULT_FG = ConsoleColor.White;
+    }
+
     /// <summary>
     /// Represents a Maze class.
     /// </summary>
@@ -58,7 +71,7 @@
         /// <summary>
         /// Prints the maze to the console.
         /// </summary>
-        public void Print(IEnumerable<Point>? path = null)
+        public void Print(IEnumerable<Format>? formats = null)
         {
             Console.Clear();
             for (int row = 0; row < maze.GetLength(0); row++)
@@ -66,11 +79,11 @@
                 for (int col = 0; col < maze.GetLength(1); col++)
                 {
                     string c = maze[row, col] ? "██" : "  ";
-                    if (path != null && path.Contains(new Point(row, col)))
-                    {
-                        c = "░░";
-                    }
-                    Console.Write(c);
+                    Format? format = formats?.FirstOrDefault(f => f?.Row == row && f?.Column == col, null);
+                    string symbol = format?.Symbol ?? c;
+                    Console.BackgroundColor = format?.Background ?? Format.DEFAULT_BG;
+                    Console.ForegroundColor = format?.Foreground ?? Format.DEFAULT_FG;
+                    Console.Write(symbol);
                 }
                 Console.WriteLine();
             }

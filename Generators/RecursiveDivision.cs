@@ -77,11 +77,11 @@ namespace ConsoleMaze
             // Do the same for each chamber
             // top left
             RecurDivision(topLeftX, topLeftY, wallV - 1, wallH - 1);
-            // top right
+            //// top right
             RecurDivision(wallV + 1, topLeftY, bottomRightX, wallH - 1);
-            // bottom left
+            //// bottom left
             RecurDivision(topLeftX, wallH + 1, wallV - 1, bottomRightY);
-            // bottom right
+            //// bottom right
             RecurDivision(wallV + 1, wallH + 1, bottomRightX, bottomRightY);
         }
     }
