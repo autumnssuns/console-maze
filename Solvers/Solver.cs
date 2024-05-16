@@ -55,7 +55,7 @@
         protected void Visit(Point point)
         {
             formats.RemoveWhere(item => item.Row == point.Y && item.Column == point.X);
-            formats.Add(new Format(point.Y, point.X, "▒▒", ConsoleColor.Red));
+            formats.Add(new Format(point.Y, point.X, "▒▒", ConsoleColor.Cyan));
             Snapshot();
         }
         protected void Backtrack(Point point)

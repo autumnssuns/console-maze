@@ -11,10 +11,10 @@ namespace ConsoleMaze
         
         public override IEnumerable<Point> Solve()
         {
-            //Begin();
+            Begin();
             queue.Enqueue(Start);
             cameFrom[Start] = null;
-            //Visit(Start);
+            Visit(Start);
             int count = 0;
             while (queue.Count > 0)
             {
@@ -33,12 +33,11 @@ namespace ConsoleMaze
                 foreach (Point neighbor in neighbors)
                 {
                     if (visited.Any(p => p.X == neighbor.X && p.Y == neighbor.Y)) continue;
+                    visited.Add(neighbor);
                     Probe(neighbor);
                     queue.Enqueue(neighbor);
                     cameFrom[neighbor] = current;
                 }
-                Console.WriteLine(queue.Count);
-                Console.ReadKey();
             }
 
             return Enumerable.Empty<Point>();
